@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=600, initial-scale=1.0">
+  <title>PromptPilot — Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #06080f;
+      --bg-secondary: #0c1021;
+      --bg-card: rgba(15, 20, 40, 0.65);
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --border-active: rgba(79, 70, 229, 0.4);
+      --text-primary: #e8ecf4;
+      --text-secondary: #8892a8;
+      --text-muted: #5a6480;
+      --accent-indigo: #6366f1;
+      --accent-violet: #818cf8;
+      --accent-cyan: #06b6d4;
+      --accent-emerald: #10b981;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, system-ui, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-header h1 {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #e0e7ff, #a5b4fc, #67e8f9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .page-header p {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(12px);
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title .icon { font-size: 18px; }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group:last-child { margin-bottom: 0; }
+
+    label.form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"], input[type="url"], select {
+      width: 100%;
+      padding: 10px 14px;
+      background: rgba(10, 14, 30, 0.8);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: 'Inter', monospace;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--accent-indigo);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    select {
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238892a8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .stat-box {
+      text-align: center;
+      padding: 16px;
+      background: rgba(10, 14, 30, 0.5);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .stat-box .value {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-indigo), var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-box .label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .saved-msg {
+      display: none;
+      color: var(--accent-emerald);
+      font-size: 12px;
+      font-weight: 500;
+      margin-left: 12px;
+      animation: fadeIn 0.3s;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .version-info {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="page-header">
+      <h1>⚡ PromptPilot Settings</h1>
+      <p>Configure your AI prompt optimization preferences</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="card">
+      <div class="card-title"><span class="icon">📊</span> Usage Statistics</div>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="value" id="totalOptimizations">0</div>
+          <div class="label">Optimizations</div>
+        </div>
+        <div class="stat-box">
+          <div class="value" id="totalTokensSaved">0</div>
+          <div class="label">Tokens Saved</div>
+        </div>
+        <div class="stat-box">
+          <div class="value" id="avgReduction">0%</div>
+          <div class="label">Avg Reduction</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- General Settings -->
+    <div class="card">
+      <div class="card-title"><span class="icon">⚙️</span> General</div>
+
+      <div class="form-group">
+        <label class="form-label" for="defaultMode">Default Compression Mode</label>
+        <select id="defaultMode">
+          <option value="conservative">Conservative (10–30% reduction)</option>
+          <option value="balanced" selected>Balanced (30–60% reduction)</option>
+          <option value="aggressive">Aggressive (60–90% reduction)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Backend Settings -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🔌</span> Backend (Phase 2)</div>
+
+      <div class="form-group">
+        <label class="form-label" for="backendUrl">Backend API URL</label>
+        <input type="url" id="backendUrl" value="http://localhost:8000" placeholder="http://localhost:8000">
+        <div class="hint">Connect to a local or remote PromptPilot backend for AI-powered compression</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Backend Status</label>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: var(--text-muted); font-size: 13px;" id="backendStatus">Not connected (Phase 2 feature)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="btn-group">
+      <button class="btn btn-primary" id="btnSave">Save Settings</button>
+      <button class="btn btn-secondary" id="btnReset">Reset to Defaults</button>
+      <span class="saved-msg" id="savedMsg">✓ Settings saved</span>
+    </div>
+
+    <div class="version-info">
+      PromptPilot v1.0.0 — Phase 1 (Client-Side) · Built with ❤️ for efficient AI interactions
+    </div>
+  </div>
+
+  <script>
+    // Load settings
+    document.addEventListener('DOMContentLoaded', () => {
+      chrome.storage.local.get(['settings', 'stats'], (result) => {
+        const settings = result.settings || {};
+        const stats = result.stats || {};
+
+        // Apply settings
+        if (settings.defaultMode) {
+          document.getElementById('defaultMode').value = settings.defaultMode;
+        }
+        if (settings.backendUrl) {
+          document.getElementById('backendUrl').value = settings.backendUrl;
+        }
+
+        // Apply stats
+        document.getElementById('totalOptimizations').textContent = 
+          (stats.totalOptimizations || 0).toLocaleString();
+        document.getElementById('totalTokensSaved').textContent = 
+          (stats.totalTokensSaved || 0).toLocaleString();
+        
+        const avgRed = stats.totalOriginalTokens > 0
+          ? Math.round((stats.totalTokensSaved / stats.totalOriginalTokens) * 100)
+          : 0;
+        document.getElementById('avgReduction').textContent = avgRed + '%';
+      });
+    });
+
+    // Save settings
+    document.getElementById('btnSave').addEventListener('click', () => {
+      const settings = {
+        defaultMode: document.getElementById('defaultMode').value,
+        backendUrl: document.getElementById('backendUrl').value,
+        useBackend: false,
+        options: {
+          removeRepetition: true,
+          preserveRequirements: true,
+          preserveCode: true,
+          summarizeHistory: true,
+          redactSecrets: true
+        }
+      };
+
+      chrome.storage.local.set({ settings }, () => {
+        const msg = document.getElementById('savedMsg');
+        msg.style.display = 'inline';
+        setTimeout(() => { msg.style.display = 'none'; }, 3000);
+      });
+    });
+
+    // Reset
+    document.getElementById('btnReset').addEventListener('click', () => {
+      document.getElementById('defaultMode').value = 'balanced';
+      document.getElementById('backendUrl').value = 'http://localhost:8000';
+    });
+  </script>
+</body>
+</html>

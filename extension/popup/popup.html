@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=400, initial-scale=1.0">
+  <title>PromptPilot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app">
+    <!-- ── HEADER ── -->
+    <header class="header">
+      <div class="header-glow"></div>
+      <div class="header-content">
+        <div class="logo-row">
+          <div class="logo-icon">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+              <path d="M14 2L18 8L26 10L20 16L21.5 24L14 20L6.5 24L8 16L2 10L10 8L14 2Z" 
+                    fill="url(#logoGrad)" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+              <path d="M14 7L16 11L20 12L17 15L17.5 19L14 17L10.5 19L11 15L8 12L12 11L14 7Z" 
+                    fill="rgba(255,255,255,0.9)"/>
+              <defs>
+                <linearGradient id="logoGrad" x1="2" y1="2" x2="26" y2="24">
+                  <stop offset="0%" stop-color="#818cf8"/>
+                  <stop offset="100%" stop-color="#06b6d4"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <h1>PromptPilot</h1>
+            <span class="logo-subtitle">AI Context Optimizer</span>
+          </div>
+        </div>
+        <div class="status-badge" id="statusBadge">
+          <span class="status-dot"></span>
+          <span class="status-text">Client-Side</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ── TOKEN STATS ── -->
+    <section class="stats-section" id="statsSection">
+      <div class="stats-grid">
+        <div class="stat-card stat-original">
+          <div class="stat-label">Original</div>
+          <div class="stat-value" id="originalTokens">0</div>
+          <div class="stat-unit">tokens</div>
+        </div>
+        <div class="stat-card stat-arrow">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="url(#arrowGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="arrowGrad" x1="5" y1="12" x2="19" y2="12">
+                <stop offset="0%" stop-color="#818cf8"/>
+                <stop offset="100%" stop-color="#06b6d4"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="stat-card stat-compressed">
+          <div class="stat-label">Optimized</div>
+          <div class="stat-value" id="compressedTokens">0</div>
+          <div class="stat-unit">tokens</div>
+        </div>
+      </div>
+      <div class="reduction-ring-container" id="reductionContainer" style="display: none;">
+        <div class="reduction-ring">
+          <svg viewBox="0 0 80 80" class="ring-svg">
+            <circle cx="40" cy="40" r="34" class="ring-bg"/>
+            <circle cx="40" cy="40" r="34" class="ring-fill" id="reductionRing"
+                    stroke-dasharray="213.63" stroke-dashoffset="213.63"/>
+          </svg>
+          <div class="ring-text">
+            <span class="ring-value" id="reductionPercent">0</span>
+            <span class="ring-label">% saved</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── INPUT AREA ── -->
+    <section class="input-section">
+      <div class="input-header">
+        <label for="inputText" class="input-label">Paste your prompt or context</label>
+        <div class="input-actions">
+          <button class="btn-icon" id="btnCapture" title="Capture from active AI tab">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M15 3H21V9M21 3L13 11M10 5H5C3.89543 5 3 5.89543 3 7V19C3 20.1046 3.89543 21 5 21H17C18.1046 21 19 20.1046 19 19V14" 
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="btn-icon" id="btnClear" title="Clear input">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <textarea id="inputText" placeholder="Paste your prompt, conversation, or code here...&#10;&#10;Or click the capture button to grab text from the active AI chat tab." rows="6"></textarea>
+      <div class="char-count">
+        <span id="charCount">0</span> characters · <span id="liveTokenCount">0</span> estimated tokens
+      </div>
+    </section>
+
+    <!-- ── COMPRESSION MODE ── -->
+    <section class="mode-section">
+      <div class="section-title">Compression Mode</div>
+      <div class="mode-selector">
+        <label class="mode-option">
+          <input type="radio" name="mode" value="conservative">
+          <div class="mode-card">
+            <span class="mode-icon">🛡️</span>
+            <span class="mode-name">Conservative</span>
+            <span class="mode-desc">10–30% reduction</span>
+          </div>
+        </label>
+        <label class="mode-option">
+          <input type="radio" name="mode" value="balanced" checked>
+          <div class="mode-card">
+            <span class="mode-icon">⚖️</span>
+            <span class="mode-name">Balanced</span>
+            <span class="mode-desc">30–60% reduction</span>
+          </div>
+        </label>
+        <label class="mode-option">
+          <input type="radio" name="mode" value="aggressive">
+          <div class="mode-card">
+            <span class="mode-icon">⚡</span>
+            <span class="mode-name">Aggressive</span>
+            <span class="mode-desc">60–90% reduction</span>
+          </div>
+        </label>
+      </div>
+    </section>
+
+    <!-- ── FEATURE TOGGLES ── -->
+    <section class="toggles-section">
+      <div class="section-title">Features</div>
+      <div class="toggles-grid">
+        <label class="toggle-row">
+          <span class="toggle-label">
+            <span class="toggle-icon">🔁</span>
+            Remove repetition
+          </span>
+          <input type="checkbox" id="optRepetition" checked class="toggle-input">
+          <span class="toggle-switch"></span>
+        </label>
+        <label class="toggle-row">
+          <span class="toggle-label">
+            <span class="toggle-icon">📋</span>
+            Preserve requirements
+          </span>
+          <input type="checkbox" id="optRequirements" checked class="toggle-input">
+          <span class="toggle-switch"></span>
+        </label>
+        <label class="toggle-row">
+          <span class="toggle-label">
+            <span class="toggle-icon">💻</span>
+            Preserve code
+          </span>
+          <input type="checkbox" id="optCode" checked class="toggle-input">
+          <span class="toggle-switch"></span>
+        </label>
+        <label class="toggle-row">
+          <span class="toggle-label">
+            <span class="toggle-icon">📝</span>
+            Summarize history
+          </span>
+          <input type="checkbox" id="optHistory" checked class="toggle-input">
+          <span class="toggle-switch"></span>
+        </label>
+        <label class="toggle-row">
+          <span class="toggle-label">
+            <span class="toggle-icon">🔒</span>
+            Redact secrets
+          </span>
+          <input type="checkbox" id="optSecrets" checked class="toggle-input">
+          <span class="toggle-switch"></span>
+        </label>
+      </div>
+    </section>
+
+    <!-- ── OPTIMIZE BUTTON ── -->
+    <section class="action-section">
+      <button class="btn-optimize" id="btnOptimize">
+        <span class="btn-optimize-text">Optimize Prompt</span>
+        <span class="btn-optimize-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" fill="currentColor"/>
+          </svg>
+        </span>
+      </button>
+    </section>
+
+    <!-- ── RESULTS ── -->
+    <section class="results-section" id="resultsSection" style="display: none;">
+      <div class="results-header">
+        <div class="section-title">Optimized Result</div>
+        <div class="results-actions">
+          <button class="btn-small" id="btnCopyResult" title="Copy to clipboard">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" stroke-width="2"/>
+              <path d="M5 15H4C2.89543 15 2 14.1046 2 13V4C2 2.89543 2.89543 2 4 2H13C14.1046 2 15 2.89543 15 4V5" 
+                    stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <span>Copy</span>
+          </button>
+          <button class="btn-small btn-secondary" id="btnShowDiff" title="Show changes">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3V21M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>Changes</span>
+          </button>
+        </div>
+      </div>
+      <div class="result-output" id="resultOutput"></div>
+
+      <!-- Changes log -->
+      <div class="changes-log" id="changesLog" style="display: none;">
+        <div class="changes-title">Compression Details</div>
+        <div class="changes-list" id="changesList"></div>
+      </div>
+    </section>
+
+    <!-- ── FOOTER ── -->
+    <footer class="footer">
+      <span>PromptPilot v1.0</span>
+      <span class="footer-divider">·</span>
+      <span>Phase 1 — Client-Side</span>
+    </footer>
+  </div>
+
+  <!-- Load libraries -->
+  <script src="../lib/secret-detector.js"></script>
+  <script src="../lib/tokenizer.js"></script>
+  <script src="../lib/compressor.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
